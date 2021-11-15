@@ -18,6 +18,7 @@
           :collapse="isCollapse"
           :collapse-transition="false"
           router
+          :default-active="activePath"
         >
           <el-submenu
             :index="item.id + ''"
@@ -32,6 +33,7 @@
               :index="'/' + inneritem.path"
               v-for="inneritem in item.children"
               :key="inneritem.id"
+              @click="handleActive('/' + inneritem.path)"
               ><template slot="title">
                 <i class="el-icon-menu"></i>
                 <span>{{ inneritem.authName }}</span>
@@ -50,6 +52,7 @@ export default {
   name: "Home",
   created() {
     this.getMenuList();
+    this.activePath = window.sessionStorage.getItem("activePath");
   },
   data() {
     return {
@@ -62,6 +65,7 @@ export default {
         145: "iconfont icon-baobiao",
       },
       isCollapse: false,
+      activePath: "",
     };
   },
   methods: {
@@ -74,11 +78,14 @@ export default {
       const { data: res } = await this.$http.get("menus");
       if (res.meta.status !== 200) return this.$message.error(res.meta.msg);
       this.menulist = res.data;
-      console.log(res);
     },
 
     toggleCollapse() {
       this.isCollapse = !this.isCollapse;
+    },
+    handleActive(activePath) {
+      window.sessionStorage.setItem("activePath", activePath);
+      this.activePath = activePath;
     },
   },
 };
