@@ -61,6 +61,7 @@
 
             <el-tooltip effect="dark" content="分配角色" placement="top">
               <el-button
+                @click="handleRoleDialog(slotProps.row)"
                 type="warning"
                 icon="el-icon-setting"
                 size="mini"
@@ -145,6 +146,34 @@
         <el-button type="primary" @click="editUser">确 定</el-button>
       </span>
     </el-dialog>
+
+    <el-dialog
+      @close="handleRoleDialogClose"
+      title="提示"
+      :visible.sync="roleDialogVisible"
+      width="50%"
+    >
+      <span>
+        <p>当前的用户：{{ userInfo.username }}</p>
+        <p>当前的角色：{{ userInfo.role_name }}</p>
+        <p>
+          分配新角色：
+          <el-select v-model="selectedRole" placeholder="请选择角色">
+            <el-option
+              v-for="item in roleList"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </p>
+      </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="roleDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveRoleInfo">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -171,6 +200,10 @@ export default {
       cb(new Error("错误的手机格式"));
     };
     return {
+      selectedRole: "",
+      roleList: [],
+      userInfo: {},
+      roleDialogVisible: false,
       queryInfo: {
         query: "",
         pagenum: 1,
@@ -343,7 +376,7 @@ export default {
     },
 
     async removeUserById(id) {
-      console.log(id);
+      // console.log(id);
       const confirmRes = await this.$confirm(
         "正在删除文件, 是否继续?",
         "提示",
@@ -362,6 +395,36 @@ export default {
       }
       this.getUserList();
       return this.$message.success("删除用户成功");
+    },
+
+    async handleRoleDialog(userInfo) {
+      this.userInfo = userInfo;
+
+      const { data: res } = await this.$http.get("roles");
+      if (res.meta.status !== 200) {
+        return this.$message.error("获取角色列表失败");
+      }
+      this.roleList = res.data;
+      this.roleDialogVisible = true;
+    },
+    async saveRoleInfo() {
+      const { data: res } = await this.$http.put(
+        `users/${this.userInfo.id}/role`,
+        {
+          rid: this.selectedRole,
+        }
+      );
+
+      if (res.meta.status !== 200) {
+        return this.$message.error("分配角色失败");
+      }
+      this.$message.success("分配角色成功");
+      this.getUserList();
+      this.roleDialogVisible = false;
+    },
+    handleRoleDialogClose() {
+      this.selectedRole = "";
+      this.userInfo = {};
     },
   },
 };

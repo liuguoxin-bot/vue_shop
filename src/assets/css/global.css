@@ -4,6 +4,10 @@ body,
   height: 100%;
   margin: 0;
   padding: 0;
+  min-width: 1000px;
+}
+.el-main {
+  min-width: 800px;
 }
 
 .el-breadcrumb {
@@ -22,4 +26,13 @@ body,
 
 .el-pagination {
   margin-top: 15px;
+}
+
+.el-main {
+  position: absolute;
+  left: 200px;
+  right: 0;
+  top: 60px;
+  bottom: 0;
+  overflow-y: scroll;
 }
