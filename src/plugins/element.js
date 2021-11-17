@@ -28,8 +28,10 @@ import {
   Tree,
   Select,
   Option,
+  Cascader,
 } from "element-ui";
 
+Vue.use(Cascader);
 Vue.use(Select);
 Vue.use(Option);
 Vue.use(Tree);

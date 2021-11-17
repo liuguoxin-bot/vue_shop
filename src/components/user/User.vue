@@ -408,6 +408,9 @@ export default {
       this.roleDialogVisible = true;
     },
     async saveRoleInfo() {
+      if (!this.selectedRole) {
+        return this.$message.info("请选择角色");
+      }
       const { data: res } = await this.$http.put(
         `users/${this.userInfo.id}/role`,
         {
