@@ -104,6 +104,7 @@
             <el-button @click="add" type="primary" style="margin-top: 15px"
               >提交</el-button
             >
+            {{ addForm.goods_introduce }}
           </el-tab-pane>
         </el-tabs>
       </el-form>
